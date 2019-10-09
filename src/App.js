@@ -38,6 +38,8 @@ function App() {
   const dashChange = (e) => {
     setDash(e.target.value);
   }
+
+
   return (
     <div className="App">
       <input className="dot" placeholder='dot' value={dot} onChange={dotChange}></input>
@@ -57,11 +59,17 @@ const TypeBox = ({ encrypt }) => {
     e.preventDefault();
     encrypt(input);
   }
+
+  const clearBox = () => {
+    setInput('');
+  }
   return (
     <div className="typebox">
       <form onSubmit={handleSubmit}>
         <textarea className='inputText' value={input} onChange={handleChange} />
+        
         <button type='submit'>Submit</button>
+        <button onClick={clearBox}>Clear</button>
       </form>
 
     </div>
