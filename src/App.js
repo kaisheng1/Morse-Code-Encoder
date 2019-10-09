@@ -73,8 +73,8 @@ const DisplayBox = ({ code }) => {
   return (
     <div className="displaybox">
       <textarea className="displayText" value={code} />
-      <CopyToClipboard>
-        <button onClick={() => {navigator.clipboard.writeText(code)}}>Copy</button>
+      <CopyToClipboard text={code}>
+        <button>Copy</button>
       </CopyToClipboard>
     </div>
   )
