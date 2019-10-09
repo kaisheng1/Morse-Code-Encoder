@@ -12,12 +12,12 @@ function App() {
     if (input[0] === dot || input[0] === dash || input[1] === dot || input[1] === dash) {
       if (dot !== '.') {
         while (input.includes(dot)) {
-          input = input.replace(dot, '.');
+          input = input.split(dot).join('.');
         }
       }
       if (dash !== '-') {
         while (input.includes(dash)) {
-          input = input.replace(dash, '.');
+          input = input.split(dash).join('-')
         }
       }
 
