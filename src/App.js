@@ -2,86 +2,91 @@ import React, { useState } from 'react';
 import MorseCode from './morse_code';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './App.css';
+import styled from 'styled-components';
+
+const m = new MorseCode();
 
 function App() {
-	const [ code, setCode ] = useState('');
-	const [ dot, setDot ] = useState('.');
-	const [ dash, setDash ] = useState('-');
-	const m = Object.create(MorseCode);
+	const [ input, setInput ] = useState('');
+	const [ output, setOutput ] = useState('');
+	const [ doEncrypt, setDoEncrypt ] = useState(true);
+
 	const encrypt = (input) => {
-		if (input[0] === dot || input[0] === dash || input[1] === dot || input[1] === dash) {
-			if (dot !== '.') {
-				while (input.includes(dot)) {
-					input = input.split(dot).join('.');
-				}
-			}
-			if (dash !== '-') {
-				while (input.includes(dash)) {
-					input = input.split(dash).join('-');
-				}
-			}
-
-			let output = m.decode(input);
-			setCode(output);
-		} else {
-			let output = m.encode(input);
-			output = output.replace(/\./g, dot);
-			output = output.replace(/-/g, dash);
-			setCode(output);
-		}
+		setOutput(m.encode(input));
 	};
-	const dotChange = (e) => {
-		setDot(e.target.value);
+	const decrypt = (input) => {
+		setOutput(m.decode(input));
 	};
 
-	const dashChange = (e) => {
-		setDash(e.target.value);
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		doEncrypt ? encrypt(input) : decrypt(input);
 	};
 
 	return (
-		<div className="App">
-			<input className="dot" placeholder="dot" value={dot} onChange={dotChange} />
-			<input className="dash" placeholder="dash" value={dash} onChange={dashChange} />
-			<TypeBox encrypt={encrypt} />
-			<DisplayBox code={code} />
-		</div>
+		<Container>
+			<Row>
+				<form onSubmit={handleSubmit} style={{ height: '100%' }}>
+					<TextArea placeholder="Input" value={input} onChange={(e) => setInput(e.target.value)} />
+					<FloatRight>
+						<Button type="submit" onClick={() => setDoEncrypt(true)}>
+							Encode
+						</Button>
+						<Button type="submit" onClick={() => setDoEncrypt(false)}>
+							Decode
+						</Button>
+					</FloatRight>
+				</form>
+			</Row>
+			<Row>
+				<TextArea placeholder="Output" value={output} onChange={(e) => setOutput(e.target.value)} />
+				<FloatRight>
+					<CopyToClipboard text={output} onCopy={() => alert('Copied successfully')}>
+						<Button>Copy</Button>
+					</CopyToClipboard>
+				</FloatRight>
+			</Row>
+		</Container>
 	);
 }
 
-const TypeBox = ({ encrypt }) => {
-	const [ input, setInput ] = useState('');
-	const handleChange = (e) => {
-		setInput(e.target.value);
-	};
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		encrypt(input);
-	};
+const Container = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+`;
 
-	const clearBox = () => {
-		setInput('');
-	};
-	return (
-		<div className="typebox">
-			<form onSubmit={handleSubmit}>
-				<textarea className="inputText" placeholder="Encode or decode" value={input} onChange={handleChange} />
+const Row = styled.div`
+	width: 100%;
+	height: 100%;
+	padding: 2rem 0;
+`;
+const TextArea = styled.textarea`
+	width: 100%;
+	height: 80%;
+	padding: 1rem;
+`;
 
-				<button type="submit">Submit</button>
-				<button onClick={clearBox}>Clear</button>
-			</form>
-		</div>
-	);
-};
+const FloatRight = styled.div`
+	display: flex;
+	justify-content: flex-end;
+`;
 
-const DisplayBox = ({ code }) => {
-	return (
-		<div className="displaybox">
-			<textarea className="displayText" value={code} />
-			<CopyToClipboard text={code}>
-				<button>Copy</button>
-			</CopyToClipboard>
-		</div>
-	);
-};
+const Button = styled.button`
+	background-color: #007bff;
+	color: white;
+	outline: none;
+	border: none;
+	padding: 0.5rem 2rem;
+	cursor: pointer;
+	margin-left: 1rem;
+	margin-top: 1rem;
+
+	&:hover {
+		opacity: 90%;
+	}
+`;
 
 export default App;
